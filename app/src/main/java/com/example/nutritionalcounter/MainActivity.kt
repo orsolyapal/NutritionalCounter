@@ -32,7 +32,8 @@ class MainActivity : ComponentActivity() {
                     onAddNutritionClick = {
                         // Navigáció az új tápérték hozzáadása képernyőre
                     },
-                    onNutritionClick = { selectedNutrition ->
+                    onNutritionClick = {
+                        // selectedNutrition ->
                         // Navigáció a részletek / szerkesztés képernyőre
                     }
                 )
