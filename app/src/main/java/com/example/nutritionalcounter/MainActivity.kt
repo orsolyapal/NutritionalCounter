@@ -1,0 +1,64 @@
+package com.example.nutritionalcounter
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+
+import com.example.nutritionalcounter.ui.nutrition_list.NutritionListScreen
+import com.example.nutritionalcounter.ui.nutrition_list.NutritionViewModel
+import com.example.nutritionalcounter.ui.theme.NutritionalCounterTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            NutritionalCounterTheme {
+                val viewModel: NutritionViewModel = viewModel()
+
+                NutritionListScreen(
+                    viewModel = viewModel,
+                    onAddNutritionClick = {
+                        // Navigáció az új tápérték hozzáadása képernyőre
+                    },
+                    onNutritionClick = { selectedNutrition ->
+                        // Navigáció a részletek / szerkesztés képernyőre
+                    }
+                )
+
+
+                /*
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Greeting(
+                        name = "Android",
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }*/
+            }
+        }
+    }
+}
+/*
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Tápérték számító Android alkalmazás. $name!",
+        modifier = modifier
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    NutritionalCounterTheme {
+        Greeting("Android")
+    }
+}*/
