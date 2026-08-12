@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import android.content.Context
 import androidx.room.Room
 
-@Database(entities = [Nutrition::class], version = 1, exportSchema = false)
+@Database(entities = [Nutrition::class], version = 2, exportSchema = false)
 abstract class AppDatabase:RoomDatabase() {
     abstract fun nutritionDao() : NutritionDao
 
@@ -19,7 +19,9 @@ abstract class AppDatabase:RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "app_database"
-                ).build()
+                )
+                .fallbackToDestructiveMigration()
+                .build()
                 INSTANCE = instance
                 instance
             }

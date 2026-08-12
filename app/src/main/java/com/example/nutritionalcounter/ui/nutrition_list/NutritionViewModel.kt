@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-
 class NutritionViewModel(private val repository: NutritionRepositoryInterface): ViewModel() {
     val searchQuery = MutableStateFlow("")
     @OptIn(ExperimentalCoroutinesApi::class)

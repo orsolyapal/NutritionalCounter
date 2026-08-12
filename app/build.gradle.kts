@@ -42,10 +42,10 @@ kotlin {
 }
 
 dependencies {
-    // Jetpack Compose ViewModel integráció
+    // Jetpack Compose ViewModel integration
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
-    // Room (egyszeri, tiszta deklaráció a toml-ból)
+    // Room database
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
@@ -59,9 +59,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation("androidx.compose.material:material-icons-extended:1.7.5")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.navigation:navigation-compose:2.8.0")
 
-    // Tesztek
+    // Tests
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)

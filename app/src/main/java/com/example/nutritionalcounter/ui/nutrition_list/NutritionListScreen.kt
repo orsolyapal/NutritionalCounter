@@ -144,7 +144,7 @@ fun NutritionItemCard(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    MacroText(label = "Zsír", value = nutrition.fet)
+                    MacroText(label = "Zsír", value = nutrition.fat)
                     MacroText(label = "Fehérje", value = nutrition.protein)
                     MacroText(label = "Ch", value = nutrition.carbs)
                     MacroText(label = "Rost", value = nutrition.fibre)
