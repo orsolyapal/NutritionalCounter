@@ -140,15 +140,13 @@ fun NutritionItemCard(
                 )
                 Spacer(modifier = Modifier.height(6.dp))
 
-                // Makrotápanyagok kiírása
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    MacroText(label = "Zsír", value = nutrition.fat)
-                    MacroText(label = "Fehérje", value = nutrition.protein)
-                    MacroText(label = "Ch", value = nutrition.carbs)
-                    MacroText(label = "Rost", value = nutrition.fibre)
-                    MacroText(label = "Net Ch", value = nutrition.netCarbs, isBold = true)
+                    MacroText(label = "F", value = nutrition.fat)
+                    MacroText(label = "Pr", value = nutrition.protein)
+                    MacroText(label = "NCh", value = nutrition.netCarbs)
+                    MacroText(label = "KJ", value = nutrition.kilojoule)
                 }
             }
 
