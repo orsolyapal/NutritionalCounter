@@ -24,10 +24,16 @@ import com.example.nutritionalcounter.ui.nutrition_list.NutritionViewModelFactor
 import com.example.nutritionalcounter.ui.nutrition_add.AddNutritionScreen
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.nutritionalcounter.data.db.PortionRepositoryImpl
+import com.example.nutritionalcounter.ui.portion_list.PortionListScreen
+import com.example.nutritionalcounter.ui.portion_list.PortionViewModel
+import com.example.nutritionalcounter.ui.portion_list.PortionViewModelFactory
 
+import androidx.compose.runtime.getValue
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,27 +41,32 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val database = AppDatabase.getDatabase(applicationContext)
-        val repository = NutritionRepositoryImpl(database.nutritionDao())
+        val nutritionRepository = NutritionRepositoryImpl(database.nutritionDao())
+        val portionRepository = PortionRepositoryImpl(database.portionDao())
 
         setContent {
             NutritionalCounterTheme {
                 val navController = rememberNavController()
-                val viewModel: NutritionViewModel = viewModel(
-                    factory = NutritionViewModelFactory(repository)
+                val nutritionViewModel: NutritionViewModel = viewModel(
+                    factory = NutritionViewModelFactory(nutritionRepository)
+                )
+
+                val portionViewModel: PortionViewModel = viewModel(
+                    factory = PortionViewModelFactory(portionRepository)
                 )
 
                 NavHost(
                     navController = navController,
                     startDestination = "home" // A kezdőképernyő az új startDestination
                 ) {
-                    // 0. Kezdőképernyő a 3 gombbal
+                    // Kezdőképernyő a 3 gombbal
                     composable("home") {
                         HomeScreen(
                             onNutritionListClick = {
                                 navController.navigate("nutrition_list")
                             },
                             onPortionListClick = {
-                                // TODO: Navigáció az Adagokhoz
+                                navController.navigate("portion_list")
                             },
                             onDailyTotalClick = {
                                 // TODO: Navigáció a Napi teljes fogyasztáshoz
@@ -66,7 +77,7 @@ class MainActivity : ComponentActivity() {
                     // Tápérték Lista képernyő
                     composable("nutrition_list") {
                         NutritionListScreen(
-                            viewModel = viewModel,
+                            viewModel = nutritionViewModel,
                             onAddNutritionClick = {
                                 navController.navigate("add_nutrition")
                             },
@@ -80,7 +91,7 @@ class MainActivity : ComponentActivity() {
                     composable("add_nutrition") {
                         AddNutritionScreen(
                             onSaveClick = { nutritionItem ->
-                                viewModel.addNutrition(nutritionItem)
+                                nutritionViewModel.addNutrition(nutritionItem)
                                 navController.popBackStack()
                             },
                             onBackClick = {
@@ -88,6 +99,33 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
+
+                    // Adag Lista képernyő
+                    composable("portion_list") {
+                        val portions by portionViewModel.portions.collectAsState(initial = emptyList())
+                        val searchQuery by portionViewModel.searchQuery.collectAsState()
+
+                        PortionListScreen(
+                            portionList = portions,
+                            searchQuery = searchQuery,
+                            onSearchQueryChange = { query ->
+                                portionViewModel.onSearchQueryChanged(query)
+                            },
+                            onAddPortionClick = {
+                                navController.navigate("add_portion")
+                            },
+                            onPortionClick = { portionWithNutrition ->
+                                navController.navigate("edit_portion/${portionWithNutrition.portion.id}")
+                            },
+                            onDeletePortionClick = { portionWithNutrition ->
+                                portionViewModel.deletePortion(portionWithNutrition.portion)
+                            },
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
+
                 }
             }
         }

@@ -1,4 +1,5 @@
-package com.example.nutritionalcounter.ui.nutrition_list
+package com.example.nutritionalcounter.ui.portion_list
+
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
@@ -17,23 +18,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-import com.example.nutritionalcounter.data.db.Nutrition
+import com.example.nutritionalcounter.data.db.PortionWithNutrition
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NutritionListScreen(
-    viewModel: NutritionViewModel,
-    onAddNutritionClick: () -> Unit,
-    onNutritionClick: (Nutrition) -> Unit
+fun PortionListScreen(
+    portionList: List<PortionWithNutrition>,
+    searchQuery: String,                         // UI állapot átadása
+    onSearchQueryChange: (String) -> Unit,       // Keresési szöveg változása
+    onAddPortionClick: () -> Unit,
+    onPortionClick: (PortionWithNutrition) -> Unit,
+    onDeletePortionClick: (PortionWithNutrition) -> Unit,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    // UI Állapotok gyűjtése a ViewModel-ből
-    val nutritionList by viewModel.nutritions.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsState()
-
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Tápértékek") },
+                title = { Text("Adagok") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -42,12 +44,12 @@ fun NutritionListScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddNutritionClick,
+                onClick = onAddPortionClick,
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Tápérték hozzáadása"
+                    contentDescription = "Elfogyasztott adag"
                 )
             }
         }
@@ -58,20 +60,20 @@ fun NutritionListScreen(
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
         ) {
-            // 1. Keresőmező
+            // Keresőmező
             OutlinedTextField(
                 value = searchQuery,
-                onValueChange = { viewModel.onSearchQueryChanged(it) },
+                onValueChange = { onSearchQueryChange(it) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
-                placeholder = { Text("Keresés név alapján...") },
+                placeholder = { Text("Keresés dátum alapján...") },
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Search, contentDescription = null)
                 },
                 trailingIcon = {
                     AnimatedVisibility(visible = searchQuery.isNotEmpty()) {
-                        IconButton(onClick = { viewModel.onSearchQueryChanged("") }) {
+                        IconButton(onClick = { onSearchQueryChange("") }) {
                             Icon(imageVector = Icons.Default.Clear, contentDescription = "Törlés")
                         }
                     }
@@ -81,13 +83,13 @@ fun NutritionListScreen(
             )
 
             // Lista vagy Üres állapot
-            if (nutritionList.isEmpty()) {
+            if (portionList.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = if (searchQuery.isEmpty()) "Még nincs elmentett tápérték." else "Nincs találat.",
+                        text = if (searchQuery.isEmpty()) "Még nincs elfogyasztott adag." else "Nincs találat.",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -98,13 +100,13 @@ fun NutritionListScreen(
                     contentPadding = PaddingValues(bottom = 88.dp) // FAB helye miatt
                 ) {
                     items(
-                        items = nutritionList,
-                        key = { it.id } // Hatékonyabb újrarenderelés
-                    ) { nutrition ->
-                        NutritionItemCard(
-                            nutrition = nutrition,
-                            onClick = { onNutritionClick(nutrition) },
-                            onDeleteClick = { viewModel.deleteNutrition(nutrition) }
+                        items = portionList,
+                        key = { it.portion.id }
+                    ) { portionWithNutrition ->
+                        PortionItemCard(
+                            portionWithNutrition = portionWithNutrition,
+                            onClick = { onPortionClick(portionWithNutrition) },
+                            onDeleteClick = { onDeletePortionClick(portionWithNutrition) }
                         )
                     }
                 }
@@ -115,8 +117,8 @@ fun NutritionListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NutritionItemCard(
-    nutrition: Nutrition,
+fun PortionItemCard(
+    portionWithNutrition: PortionWithNutrition,
     onClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
@@ -134,7 +136,7 @@ fun NutritionItemCard(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = nutrition.name,
+                    text = portionWithNutrition.nutrition.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -143,10 +145,7 @@ fun NutritionItemCard(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    MacroText(label = "F", value = nutrition.fat)
-                    MacroText(label = "Pr", value = nutrition.protein)
-                    MacroText(label = "NCh", value = nutrition.netCarbs)
-                    MacroText(label = "KJ", value = nutrition.kilojoule)
+                    MacroText(label = "", value = portionWithNutrition.portion.amount)
                 }
             }
 

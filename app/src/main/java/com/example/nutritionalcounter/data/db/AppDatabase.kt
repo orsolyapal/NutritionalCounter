@@ -6,7 +6,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.TypeConverters
 
-@Database(entities = [Nutrition::class, Portion::class], version = 2, exportSchema = false)
+@Database(entities = [Nutrition::class, Portion::class], version = 4, exportSchema = false)
 @TypeConverters(DateConverters::class)
 abstract class AppDatabase:RoomDatabase() {
     abstract fun nutritionDao() : NutritionDao

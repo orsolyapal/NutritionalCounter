@@ -26,4 +26,5 @@ data class Portion(
     val id: Int = 0,
     val date: LocalDate,
     val nutritionId: Int,
+    val amount: Double
 )
