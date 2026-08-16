@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                    // 1. Lista képernyő
+                    // Tápérték Lista képernyő
                     composable("nutrition_list") {
                         NutritionListScreen(
                             viewModel = viewModel,
@@ -76,7 +76,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                    // 2. Új tápérték hozzáadása képernyő
+                    // Új tápérték hozzáadása képernyő
                     composable("add_nutrition") {
                         AddNutritionScreen(
                             onSaveClick = { nutritionItem ->

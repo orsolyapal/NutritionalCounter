@@ -26,6 +26,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
@@ -42,6 +43,8 @@ kotlin {
 }
 
 dependencies {
+    // Desugaring könyvtár
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     // Jetpack Compose ViewModel integration
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
@@ -64,7 +67,6 @@ dependencies {
 
     // Tests
     testImplementation(libs.junit)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
