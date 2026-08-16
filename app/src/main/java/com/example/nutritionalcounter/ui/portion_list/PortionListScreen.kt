@@ -159,15 +159,16 @@ fun PortionItemCard(
         }
     }
 }
-
 @Composable
 private fun MacroText(
     label: String,
     value: Double,
     isBold: Boolean = false
 ) {
+    val textToShow = if (label.isBlank()) "${value}g" else "$label: ${value}g"
+
     Text(
-        text = "$label: ${value}g",
+        text = textToShow,
         fontSize = 12.sp,
         fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal,
         color = if (isBold) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant

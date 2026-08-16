@@ -34,6 +34,7 @@ import com.example.nutritionalcounter.ui.portion_list.PortionViewModel
 import com.example.nutritionalcounter.ui.portion_list.PortionViewModelFactory
 
 import androidx.compose.runtime.getValue
+import com.example.nutritionalcounter.ui.portion_add.AddPortionScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,13 +127,53 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
+                    composable("add_portion") {
+                        val nutritionList by nutritionViewModel.nutritions.collectAsState(initial = emptyList())
+
+                        AddPortionScreen(
+                            nutritionList = nutritionList,
+                            onSaveClick = { newPortion ->
+                                portionViewModel.addPortion(newPortion)
+                                navController.popBackStack()
+                            },
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
+
+                    // Új elfogyasztott adag hozzáadása képernyő
+                    composable("portion_list") {
+                        // Mindkét állapot gyűjtése a ViewModel-ből
+                        val portions by portionViewModel.portions.collectAsState(initial = emptyList())
+                        val searchQuery by portionViewModel.searchQuery.collectAsState()
+
+                        PortionListScreen(
+                            portionList = portions,
+                            searchQuery = searchQuery,
+                            onSearchQueryChange = { query ->
+                                portionViewModel.onSearchQueryChanged(query)
+                            },
+                            onAddPortionClick = {
+                                navController.navigate("add_portion")
+                            },
+                            onPortionClick = { portionWithNutrition ->
+                                navController.navigate("edit_portion/${portionWithNutrition.portion.id}")
+                            },
+                            onDeletePortionClick = { portionWithNutrition ->
+                                // A törlési logika meghívása a ViewModel-ben
+                                portionViewModel.deletePortion(portionWithNutrition.portion)
+                            },
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
+                        )
                 }
             }
         }
     }
 }
 
-// Új Kezdőképernyő Composable
 @Composable
 fun HomeScreen(
     onNutritionListClick: () -> Unit,
@@ -174,4 +215,5 @@ fun HomeScreen(
             Text("Napi teljes fogyasztás")
         }
     }
+}
 }
